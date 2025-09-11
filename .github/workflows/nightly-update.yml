@@ -42,6 +42,10 @@ jobs:
             echo "no_changes=false" >> $GITHUB_OUTPUT
           fi
 
+      - name: Update README
+        if: steps.check-changes.outputs.no_changes == 'false'
+        run: nix run .#scripts.updateReadme
+
       - name: Create PR branch and commit
         if: steps.check-changes.outputs.no_changes == 'false'
         run: |
