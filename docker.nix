@@ -43,7 +43,7 @@
     name = "ai-agents";
     tag = "latest";
     config = {
-      entrypoint = ["${config.packages.motd}/bin/motd"];
+      entrypoint = ["${config.packages.motd}/bin/motd && ${pkgs.zsh}/bin/zsh"];
       user = "user";
       workingDir = "/home/user";
       env = [
