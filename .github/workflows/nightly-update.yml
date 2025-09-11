@@ -1,0 +1,95 @@
+name: Nightly Flake Update
+
+on:
+  schedule:
+    # Run daily at 2 AM UTC
+    - cron: '0 2 * * *'
+  workflow_dispatch: # Allow manual trigger
+
+jobs:
+  update-flake:
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: write
+      pull-requests: write
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Setup Nix
+        uses: cachix/install-nix-action@v26
+        with:
+          nix_path: nixpkgs=channel:nixos-unstable
+
+      - name: Update flake
+        run: nix flake update
+
+      - name: Check for changes
+        id: check-changes
+        run: |
+          if git diff --quiet flake.lock; then
+            echo "no_changes=true" >> $GITHUB_OUTPUT
+          else
+            echo "no_changes=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Create PR branch and commit
+        if: steps.check-changes.outputs.no_changes == 'false'
+        run: |
+          BRANCH_NAME="flake-update-$(date +%Y%m%d)"
+          git checkout -b $BRANCH_NAME
+          git add flake.lock
+          git commit -m "chore: update flake dependencies"
+          git push origin $BRANCH_NAME
+
+      - name: Create Pull Request
+        if: steps.check-changes.outputs.no_changes == 'false'
+        uses: peter-evans/create-pull-request@v5
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          branch: flake-update-$(date +%Y%m%d)
+          title: "chore: update flake dependencies"
+          body: |
+            Automated flake dependency update
+
+            This PR updates the flake dependencies to their latest versions.
+          draft: false
+          delete-branch: true
+
+  auto-merge:
+    runs-on: ubuntu-latest
+    needs: update-flake
+    if: needs.update-flake.result == 'success'
+
+    permissions:
+      contents: write
+      pull-requests: write
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Wait for CI to complete
+        run: |
+          # Wait up to 30 minutes for CI to complete
+          for i in {1..60}; do
+            if gh pr view flake-update-$(date +%Y%m%d) --json statusCheckRollup -q '.statusCheckRollup.state' 2>/dev/null | grep -q "SUCCESS"; then
+              echo "CI passed"
+              break
+            fi
+            echo "Waiting for CI... ($i/60)"
+            sleep 30
+          done
+
+      - name: Enable auto-merge
+        run: |
+          PR_NUMBER=$(gh pr list --head flake-update-$(date +%Y%m%d) --json number -q '.[0].number')
+          if [ -n "$PR_NUMBER" ]; then
+            gh pr merge $PR_NUMBER --auto --squash
+          fi
