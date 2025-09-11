@@ -41,7 +41,7 @@
         scripts = inputs.haumea.lib.load {
           src = ./scripts;
           inputs = {
-            inherit pkgs;
+            inherit pkgs config;
           };
         };
 

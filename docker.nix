@@ -43,7 +43,7 @@
     name = "ai-agents";
     tag = "latest";
     config = {
-      entrypoint = ["${config.packages.motd}/bin/motd && ${pkgs.zsh}/bin/zsh"];
+      entrypoint = ["${config.packages.startTemboContainer}/bin/startTemboContainer"];
       user = "user";
       workingDir = "/home/user";
       env = [
