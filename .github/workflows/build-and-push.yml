@@ -27,11 +27,13 @@ jobs:
         with:
           nix_path: nixpkgs=channel:nixos-unstable
 
-      - name: Build Docker image
-        run: nix build .#docker
+      - uses: cachix/cachix-action@v14
+        with:
+          name: tembo-ai-agents
+          authToken: "${{ secrets.CACHIX_AUTH_TOKEN }}"
 
-      - name: Load Docker image
-        run: docker load < result
+      - name: Build Docker image
+        run: nix run .#docker.copyToDockerDaemon
 
       - name: Log in to Container Registry
         uses: docker/login-action@v3
