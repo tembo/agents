@@ -29,6 +29,7 @@ Thanks to numtide/nix-ai-tools for packaging these AI Agents in Nix
 | groq-code-cli-1.0.2-unstable-2025-09-05 | 1.0.2-unstable-2025-09-05 |
 | opencode-0.7.1                          | 0.7.1                     |
 | qwen-code-0.0.9                         | 0.0.9                     |
+| aider-chat-0.86.1                       | 0.86.1                    |
 | curl-8.14.1                             | 8.14.1                    |
 | git-2.51.0                              | 2.51.0                    |
 | jq-1.8.1                                | 1.8.1                     |

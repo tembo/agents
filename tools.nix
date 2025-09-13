@@ -12,6 +12,7 @@ with pkgs; [
   groq-code-cli
   opencode
   qwen-code
+  aider-chat
 
   # General Tools
   curl
