@@ -44,7 +44,7 @@ jobs:
 
       - name: Update README
         if: steps.check-changes.outputs.no_changes == 'false'
-        run: nix run .#packages.updateReadme
+        run: nix run .#updateReadme
 
       - name: Create PR branch and commit
         if: steps.check-changes.outputs.no_changes == 'false'
