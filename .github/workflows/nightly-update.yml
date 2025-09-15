@@ -65,10 +65,12 @@ jobs:
 
       - name: Create Pull Request
         if: steps.check-changes.outputs.no_changes == 'false'
-        uses: peter-evans/create-pull-request@v5
+        uses: peter-evans/create-pull-request@v7
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          branch: ${{ steps.create-branch.outputs.branch_name }}
+          # branch: ${{ steps.create-branch.outputs.branch_name }}
+          # base: main
+          branch: main
           title: "chore: update flake dependencies"
           body: |
             Automated flake dependency update
