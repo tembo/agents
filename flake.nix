@@ -24,7 +24,9 @@
       ...
     }: {
       imports = [];
-      flake = {};
+      flake = {
+        nixosModules.default = import ./nixos-module.nix;
+      };
       systems = [
         "x86_64-linux"
         "aarch64-darwin"
