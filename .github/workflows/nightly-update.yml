@@ -46,6 +46,12 @@ jobs:
         if: steps.check-changes.outputs.no_changes == 'false'
         run: nix run .#updateReadme
 
+      - name: Configure Git
+        if: steps.check-changes.outputs.no_changes == 'false'
+        run: |
+          git config --global user.email "action@github.com"
+          git config --global user.name "GitHub Action"
+
       - name: Create PR branch and commit
         if: steps.check-changes.outputs.no_changes == 'false'
         run: |
