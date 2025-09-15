@@ -53,9 +53,11 @@ jobs:
           git config --global user.name "GitHub Action"
 
       - name: Create PR branch and commit
+        id: create-branch
         if: steps.check-changes.outputs.no_changes == 'false'
         run: |
           BRANCH_NAME="flake-update-$(date +%Y%m%d)"
+          echo "branch_name=$BRANCH_NAME" >> $GITHUB_OUTPUT
           git checkout -b $BRANCH_NAME
           git add flake.lock
           git commit -m "chore: update flake dependencies"
@@ -66,7 +68,7 @@ jobs:
         uses: peter-evans/create-pull-request@v5
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          branch: flake-update-$(date +%Y%m%d)
+          branch: ${{ steps.create-branch.outputs.branch_name }}
           title: "chore: update flake dependencies"
           body: |
             Automated flake dependency update
