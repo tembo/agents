@@ -56,7 +56,7 @@ jobs:
         id: create-branch
         if: steps.check-changes.outputs.no_changes == 'false'
         run: |
-          BRANCH_NAME="flake-update-$(date +%Y%m%d)"
+          BRANCH_NAME="flake-update-$(date +%Y%m%d-%H%M%S)"
           echo "branch_name=$BRANCH_NAME" >> $GITHUB_OUTPUT
           git checkout -b $BRANCH_NAME
           git add flake.lock
