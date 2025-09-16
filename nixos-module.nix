@@ -13,8 +13,10 @@ in {
   };
 
   config = mkIf cfg.enable {
+    nixpkgs.overlays = [
+      (final: prev: inputs.nix-ai-tools.packages.${system})
+    ];
+
     environment.systemPackages = tools;
   };
-
-
 }

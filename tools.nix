@@ -1,4 +1,9 @@
-{pkgs, ...}:
+{
+  pkgs,
+  inputs,
+  system,
+  ...
+}:
 with pkgs; [
   # AI Agents
   amp
