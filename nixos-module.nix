@@ -16,8 +16,5 @@ in {
     environment.systemPackages = tools;
   };
 
-  meta = {
-    maintainers = [];
-    description = "NixOS module for Tembo AI Agents";
-  };
+
 }
